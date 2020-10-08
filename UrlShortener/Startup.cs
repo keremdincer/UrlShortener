@@ -12,7 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using UrlShortener.Contracts;
 using UrlShortener.Data;
+using UrlShortener.Services;
 
 namespace UrlShortener
 {
@@ -52,6 +54,8 @@ namespace UrlShortener
                     }
                 });
             });
+
+            services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
 
             services.AddControllers();
         }
