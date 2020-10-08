@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using UrlShortener.Data;
 
 namespace UrlShortener
 {
@@ -26,6 +28,16 @@ namespace UrlShortener
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")
+                ));
+
+            services.AddCors(options =>
+                options.AddPolicy("CorsPolicy", builder =>
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+                );
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -56,10 +68,12 @@ namespace UrlShortener
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Short Url API");
-                options.RoutePrefix = "";
+                options.RoutePrefix = "docs";
             });
 
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
 
             app.UseRouting();
 
