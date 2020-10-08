@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace UrlShortener
 {
@@ -25,6 +26,21 @@ namespace UrlShortener
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Short Url API",
+                    Version = "v1",
+                    Description = "",
+                    Contact = new OpenApiContact
+                    {
+                        Email = "b.keremdincer@gmail.com",
+                        Name = "Kerem Dinçer"
+                    }
+                });
+            });
+
             services.AddControllers();
         }
 
@@ -35,6 +51,13 @@ namespace UrlShortener
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Short Url API");
+                options.RoutePrefix = "";
+            });
 
             app.UseHttpsRedirection();
 
