@@ -16,8 +16,13 @@ namespace UrlShortener.Data
         public int? CreatorId { get; set; }
         public int ApiKeyId { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime ExpiresAt { get; set; }
+        public DateTime? ExpiresAt { get; set; }
 
         public virtual ICollection<UsageLog> UsageLogs { get; set; }
+
+        public ShortUrl()
+        {
+            CreatedAt = DateTime.Now;
+        }
     }
 }
