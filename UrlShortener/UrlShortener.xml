@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UrlShortener</name>
+    </assembly>
+    <members>
+        <member name="M:UrlShortener.Controllers.RouterController.Index(System.String)">
+            <summary>
+            Kısa url'lerin yönlendirmesini yapar.
+            </summary>
+            <param name="token">Kısa url kodu</param>
+            <remarks>
+            Not: Bu method documentation sayfası üzerinde kullanılamaz.
+            </remarks>
+            <returns></returns>
+            <response code="308">Kısa url geçerli ise yönlendirme yapar.</response>
+            <response code="404">Karşılıksız bir kısa url ise 404 döndürür.</response>
+        </member>
+        <member name="M:UrlShortener.Controllers.UrlsController.Get(System.Int32,System.Int32)">
+            <summary>
+            Tüm kısa url'leri sayfalara bölerek getirir.
+            </summary>
+            <param name="pageSize">Sayfa büyüklüğü</param>
+            <param name="pageNo">Sayfa numarası</param>
+            <returns></returns>
+        </member>
+        <member name="M:UrlShortener.Controllers.UrlsController.Get(System.Int32)">
+            <summary>
+            Id'si belirtilen kısa url'i getirir.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+            <response code="200">Id'ye karşılık gelen kısa url'i getirir.</response>
+            <response code="204">Eğer Id'nin karşılığı yoksa NoContent status'ü döner.</response>
+        </member>
+        <member name="M:UrlShortener.Controllers.UrlsController.Create(UrlShortener.Dtos.ShortUrlCreateDto)">
+            <summary>
+            Yeni bir kısa url oluşturur.
+            </summary>
+            <param name="shortUrlDto">Kısa url bilgileri</param>
+            <returns></returns>
+        </member>
+        <member name="M:UrlShortener.Controllers.UrlsController.Update(System.Int32,UrlShortener.Dtos.ShortUrlUpdateDto)">
+            <summary>
+            Id'si belirtilen kısa url'i günceller.
+            </summary>
+            <param name="id">Kısa url id'si</param>
+            <param name="shortUrlDto">Güncellenecek bilgiler</param>
+            <returns></returns>
+        </member>
+        <member name="M:UrlShortener.Controllers.UrlsController.Delete(System.Int32)">
+            <summary>
+            Id'si belirtilen kısa url'i siler.
+            </summary>
+            <param name="id">Kısa url id'si</param>
+            <returns></returns>
+        </member>
+        <member name="M:UrlShortener.Controllers.UrlsController.GetUsageLogs(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Id'si belirtilen kısa url'in kullanım bilgilerini getirir.
+            </summary>
+            <param name="id">Kısa url id'si</param>
+            <param name="pageSize">Sayfa büyüklüğü</param>
+            <param name="pageNo">Sayfa numarası</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

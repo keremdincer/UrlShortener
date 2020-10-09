@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using UrlShortener.Contracts;
 using UrlShortener.Data;
+using UrlShortener.Dtos;
 using UrlShortener.Services;
 
 namespace UrlShortener
@@ -40,6 +44,8 @@ namespace UrlShortener
                     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
                 );
 
+            services.AddAutoMapper(typeof(Maps));
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -50,12 +56,20 @@ namespace UrlShortener
                     Contact = new OpenApiContact
                     {
                         Email = "b.keremdincer@gmail.com",
-                        Name = "Kerem Dinçer"
+                        Name = "Kerem Dinçer",
+                        Url = new Uri("https://github.com/keremdincer")
                     }
                 });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                options.IncludeXmlComments(xmlPath);
             });
 
             services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
+            services.AddScoped<IUsageLogRepository, UsageLogRepository>();
+            services.AddScoped<INanoIdGenerator, NanoIdGenerator>();
 
             services.AddControllers();
         }
