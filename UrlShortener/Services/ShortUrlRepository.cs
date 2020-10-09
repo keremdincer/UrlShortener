@@ -14,6 +14,11 @@ namespace UrlShortener.Services
 
         public ShortUrlRepository(ApplicationDbContext db) => _db = db;
 
+        public async Task<int> Count()
+        {
+            return await _db.ShortUrls.CountAsync();
+        }
+
         public async Task<bool> Create(ShortUrl entity)
         {
             await _db.ShortUrls.AddAsync(entity);
@@ -26,15 +31,21 @@ namespace UrlShortener.Services
             return await Save();
         }
 
-        public async Task<IList<ShortUrl>> FindAll()
+        public async Task<IList<ShortUrl>> FindAll(int pageSize, int pageNo)
         {
-            var shortUrls = await _db.ShortUrls.ToListAsync();
+            var shortUrls = await _db.ShortUrls.Skip(pageSize * pageNo).Take(pageSize).ToListAsync();
             return shortUrls;
         }
 
         public async Task<ShortUrl> FindById(int id)
         {
             var shortUrl = await _db.ShortUrls.FindAsync(id);
+            return shortUrl;
+        }
+
+        public async Task<ShortUrl> FindByToken(string token)
+        {
+            var shortUrl = await _db.ShortUrls.FirstOrDefaultAsync(su => su.Url == token);
             return shortUrl;
         }
 

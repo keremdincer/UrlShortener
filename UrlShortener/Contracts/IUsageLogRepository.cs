@@ -6,7 +6,10 @@ using UrlShortener.Data;
 
 namespace UrlShortener.Contracts
 {
-    public interface IUsageLogRepository : IRepositoryBase<UsageLog>
+    public interface IUsageLogRepository
     {
+        Task<IList<UsageLog>> FindAllByUrlId(int id, int pageSize, int pageNo);
+
+        Task<int> CountByUrlId(int id);
     }
 }
