@@ -21,6 +21,13 @@ namespace UrlShortener.Services
                 .CountAsync();
         }
 
+        public async Task<bool> Create(UsageLog usageLog)
+        {
+            await _db.UsageLogs.AddAsync(usageLog);
+            var changes = await _db.SaveChangesAsync();
+            return changes > 0;
+        }
+
         public async Task<IList<UsageLog>> FindAllByUrlId(int id, int pageSize, int pageNo)
         {
             return await _db.UsageLogs

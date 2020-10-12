@@ -18,5 +18,10 @@ namespace UrlShortener.Data
         public DateTime CreatedAt { get; set; }
 
         public virtual ShortUrl ShortUrl { get; set; }
+
+        public UsageLog ()
+        {
+            CreatedAt = DateTime.Now;
+        }
     }
 }

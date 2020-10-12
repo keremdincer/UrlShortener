@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UAParser;
 using UrlShortener.Contracts;
+using UrlShortener.Data;
 
 namespace UrlShortener.Controllers
 {
@@ -12,10 +14,15 @@ namespace UrlShortener.Controllers
     public class RouterController : Controller
     {
         private readonly IShortUrlRepository _shortUrlRepository;
+        private readonly IUsageLogRepository _usageLogRepository;
 
-        public RouterController(IShortUrlRepository shortUrlRepository)
+        public RouterController(
+            IShortUrlRepository shortUrlRepository,
+            IUsageLogRepository usageLogRepository
+        )
         {
             _shortUrlRepository = shortUrlRepository;
+            _usageLogRepository = usageLogRepository;
         }
 
         /// <summary>
@@ -41,6 +48,21 @@ namespace UrlShortener.Controllers
             // Check if short url's expiration
             if (shortUrl.ExpiresAt.HasValue && shortUrl.ExpiresAt.Value < DateTime.Now)
                 return NotFound();
+
+            var clientInfo = Parser.GetDefault().Parse(Request.Headers["User-Agent"]);
+
+            // TODO: Use NLog for this
+            // Log usage info
+            var usageLog = new UsageLog
+            {
+                ShortUrlId = shortUrl.Id,
+                ClientIP = HttpContext.Connection.RemoteIpAddress.ToString(),
+                ClientBrowser = clientInfo.UA.Family,
+                ClientDevice = clientInfo.Device.Family,
+                ClientOS = clientInfo.OS.Family
+            };
+
+            await _usageLogRepository.Create(usageLog);
 
             return Redirect(shortUrl.OriginalUrl);
         }

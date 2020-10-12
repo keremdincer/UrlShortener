@@ -11,5 +11,7 @@ namespace UrlShortener.Contracts
         Task<IList<UsageLog>> FindAllByUrlId(int id, int pageSize, int pageNo);
 
         Task<int> CountByUrlId(int id);
+
+        Task<bool> Create(UsageLog usageLog);
     }
 }

@@ -10,11 +10,11 @@
             </summary>
             <param name="token">Kısa url kodu</param>
             <remarks>
-            Not: Bu method documentation sayfası üzerinde kullanılamaz.
+            Not: Bu method documentation sayfası üzerinde yönlendirme yapmaz.
             </remarks>
             <returns></returns>
             <response code="308">Kısa url geçerli ise yönlendirme yapar.</response>
-            <response code="404">Karşılıksız bir kısa url ise 404 döndürür.</response>
+            <response code="404">Karşılıksız bir kısa url ise</response>
         </member>
         <member name="M:UrlShortener.Controllers.UrlsController.Get(System.Int32,System.Int32)">
             <summary>
