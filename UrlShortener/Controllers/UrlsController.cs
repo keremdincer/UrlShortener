@@ -43,15 +43,24 @@ namespace UrlShortener.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int pageSize = 50, int pageNo = 1)
         {
+            // Validate paging parameters
+            if (pageSize <= 0 || pageNo <= 0)
+                return BadRequest();
+
+
+            // Limit max pageSize
+            if (pageSize > 200)
+                return BadRequest();
+
             var shortUrls = await _shortUrlRepository.FindAll(pageSize, pageNo - 1);
             var count = await _shortUrlRepository.Count();
             var shortUrlDtos = _mapper.Map<IList<ShortUrlDto>>(shortUrls);
 
-            var response = new
+            var response = new PageDto<ShortUrlDto>
             {
-                pageCount = (int)Math.Ceiling((decimal)count / pageSize),
-                pageNo,
-                data = shortUrlDtos
+                PageCount = (int)Math.Ceiling((decimal)count / pageSize),
+                PageNo = pageNo,
+                Data = shortUrlDtos
             };
 
             return Ok(response);
@@ -90,6 +99,9 @@ namespace UrlShortener.Controllers
             shortUrl.ApiKeyId = 1;
             shortUrl.isPermanent = false;
 
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var success = await _shortUrlRepository.Create(shortUrl);
             if (!success)
                 return BadRequest();
@@ -104,7 +116,7 @@ namespace UrlShortener.Controllers
         /// <param name="id">Kısa url id'si</param>
         /// <param name="shortUrlDto">Güncellenecek bilgiler</param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(
@@ -118,6 +130,9 @@ namespace UrlShortener.Controllers
 
             // Patch only supplied fields
             _mapper.Map(shortUrlDto, shortUrl);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var success = await _shortUrlRepository.Update(shortUrl);
             if (!success)
@@ -162,11 +177,11 @@ namespace UrlShortener.Controllers
             var count = await _usageLogRepository.CountByUrlId(id);
             var useLogDtos = _mapper.Map<IList<UsageLogDto>>(useLogs);
 
-            var response = new
+            var response = new PageDto<UsageLogDto>
             {
-                pageCount = (int)Math.Ceiling((decimal)count / pageSize),
-                pageNo,
-                data = useLogDtos
+                PageCount = (int)Math.Ceiling((decimal)count / pageSize),
+                PageNo = pageNo,
+                Data = useLogDtos
             };
 
             return Ok(response);
